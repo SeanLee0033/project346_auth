@@ -12,9 +12,19 @@ export class UserController {
     return newUser;
   }
 
-  @Get('/:id')
-  async findUserById(@Param('id') id: number) {
-    const user = await this.userService.findUserById(id);
+  // @Get('/:id')
+  // async findUserById(@Param('id') id: number) {
+  //   const user = await this.userService.findUserById(id);
+  //   return user;
+  // }
+
+  // @Get()
+  // async getAllUsers() {
+  //   return await this.userService.getAllusers();
+  // }
+  @Get('/email')
+  async findUserByEmail(@Body('email') email: string) {
+    const user = await this.userService.findUserByEmail(email);
     return user;
   }
 }
