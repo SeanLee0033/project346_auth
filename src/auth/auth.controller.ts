@@ -9,10 +9,16 @@ export class AuthController {
 
   @Post('/signup')
   async createUser(@Body() createUserDto: CreateUserDto) {
-    const newUser = this.authService.registerUser(createUserDto);
+    const newUser = await this.authService.registerUser(createUserDto);
     return newUser;
   }
 
   @Post('/login')
-  async authedUser(@Body() loginUserDto: LoginUserDto) {}
+  async authedUser(@Body() loginUserDto: LoginUserDto) {
+    const loggedUser = await this.authService.getAuthenticatedUser(
+      loginUserDto.email,
+      loginUserDto.password,
+    );
+    return loggedUser;
+  }
 }
