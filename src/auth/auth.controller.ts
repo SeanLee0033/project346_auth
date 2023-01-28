@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
@@ -11,6 +12,7 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { LocalAuthGuard } from './localAuth.guard';
 import { RequestWithUser } from './requestWithUser.interface';
+import { JwtAuthGuard } from './jwtAuth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -31,5 +33,12 @@ export class AuthController {
     return token;
     // const user = request.user; => 유저정보 (id, email, username)
     // return user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  authenticate(@Req() request: RequestWithUser) {
+    const { user } = request;
+    return user;
   }
 }

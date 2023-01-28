@@ -14,5 +14,7 @@ export class User {
   @Column()
   public password: string;
 
+  @Column({ default: false })
+  public isEmailConfirmed: boolean;
   // 핸드폰, 기타등등 추가.
 }
