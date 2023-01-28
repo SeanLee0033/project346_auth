@@ -2,9 +2,16 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { TokenPayload } from "./tokenPayload.interface";
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
 
   public async registerUser(createUserDto: CreateUserDto) {
     // const newUser = await this.userService.createUser(createUserDto);
@@ -31,7 +38,7 @@ export class AuthService {
     try {
       const user = await this.userService.findUserByEmail(email);
       // 패스워드 매칭
-      await this.verifyPassword(hashedPassword, user.password)
+      await this.verifyPassword(hashedPassword, user.password);
       // const isPasswordMatching = await bcrypt.compare(
       //   hashedPassword,
       //   user.password,
@@ -39,7 +46,7 @@ export class AuthService {
       //
       // if (!isPasswordMatching) {
       //   throw new HttpException(
-      //     'Password does not matched',
+      //     'Password is not matched',
       //     HttpStatus.BAD_REQUEST,
       //   );
       // }
@@ -68,5 +75,11 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  public getJwtToken(userId: number) {
+    const payload: TokenPayload = { userId };
+    const token = this.jwtService.sign(payload);
+    return token;
   }
 }

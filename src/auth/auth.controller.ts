@@ -26,7 +26,10 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   async authedUser(@Req() request: RequestWithUser) {
-    const user = request.user;
-    return user;
+    const { user } = request;
+    const token = this.authService.getJwtToken(user.id);
+    return token;
+    // const user = request.user; => 유저정보 (id, email, username)
+    // return user;
   }
 }
