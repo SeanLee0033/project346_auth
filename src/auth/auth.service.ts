@@ -4,13 +4,15 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { TokenPayload } from "./tokenPayload.interface";
+import { TokenPayload } from './tokenPayload.interface';
+import { EmailService } from '../email/email.service';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
 
   public async registerUser(createUserDto: CreateUserDto) {
@@ -81,5 +83,14 @@ export class AuthService {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload);
     return token;
+  }
+
+  public async sendEmailTest() {
+    return await this.emailService.sendMail({
+      // to: email,
+      to: 'qww0033@gamil.com',
+      subject: 'project 346 test mail',
+      text: 'Welcome to project346',
+    });
   }
 }

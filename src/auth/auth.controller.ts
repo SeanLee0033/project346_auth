@@ -24,6 +24,11 @@ export class AuthController {
     return newUser;
   }
 
+  @Post('/email')
+  async testEmail() {
+    return await this.authService.sendEmailTest();
+  }
+
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('/login')
