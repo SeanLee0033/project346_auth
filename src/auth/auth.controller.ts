@@ -14,6 +14,7 @@ import { LocalAuthGuard } from './localAuth.guard';
 import { RequestWithUser } from './requestWithUser.interface';
 import { JwtAuthGuard } from './jwtAuth.guard';
 import { ConfirmEmailDto } from '../user/dto/confirm-email.dto';
+import { User } from '../user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -48,6 +49,12 @@ export class AuthController {
     return token;
     // const user = request.user; => 유저정보 (id, email, username)
     // return user;
+  }
+
+  @Post('resend/confirm')
+  @UseGuards(JwtAuthGuard)
+  async resendConfirmationLink(@Req() req: RequestWithUser) {
+    await this.authService.resendConfirmationLink(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
