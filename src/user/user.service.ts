@@ -40,4 +40,10 @@ export class UserService {
     }
     return user;
   }
+
+  async markEmailAsConfirmed(email: string) {
+    return this.userRepository.update({email},{
+      isEmailConfirmed: true
+    });
+  }
 }

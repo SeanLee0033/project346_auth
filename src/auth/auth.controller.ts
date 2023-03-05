@@ -13,6 +13,7 @@ import { LoginUserDto } from '../user/dto/login-user.dto';
 import { LocalAuthGuard } from './localAuth.guard';
 import { RequestWithUser } from './requestWithUser.interface';
 import { JwtAuthGuard } from './jwtAuth.guard';
+import { ConfirmEmailDto } from '../user/dto/confirm-email.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +24,14 @@ export class AuthController {
     const newUser = await this.authService.registerUser(createUserDto);
     await this.authService.sendVerificationLink(createUserDto.email);
     return newUser;
+  }
+
+  @Post('/confirm')
+  async confirmEmail(@Body() confirmationData: ConfirmEmailDto) {
+    const email = await this.authService.decodeConfirmationToken(
+      confirmationData.token,
+    );
+    await this.authService.confirmEmail(email);
   }
 
   @Post('/email')
