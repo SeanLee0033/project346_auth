@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './tokenPayload.interface';
 import { EmailService } from '../email/email.service';
+import { VerificationTokenPayload } from './VerificationTokenPayload.interface';
 @Injectable()
 export class AuthService {
   constructor(
@@ -88,9 +89,31 @@ export class AuthService {
   public async sendEmailTest() {
     return await this.emailService.sendMail({
       // to: email,
-      to: 'qww0033@gamil.com',
+      to: 'qww0033@gmail.com',
       subject: 'project 346 test mail',
       text: 'Welcome to project346',
+    });
+  }
+
+  public sendVerificationLink(email: string) {
+    const payload: VerificationTokenPayload = { email };
+
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get(
+        'JWT_VERIFICATION_TOKEN_EXPIRATION_TIME',
+      )}s`,
+    });
+
+    const url = `${this.configService.get(
+      'EMAIL_CONFIRMATION_URL',
+    )}?token=${token}`;
+    const text = `Welcome to the application. To confirm the email address, click here: ${url}`;
+
+    return this.emailService.sendMail({
+      to: email,
+      subject: 'Sign up Email confirmation',
+      text,
     });
   }
 }

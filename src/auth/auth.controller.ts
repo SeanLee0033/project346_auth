@@ -21,6 +21,7 @@ export class AuthController {
   @Post('/signup')
   async createUser(@Body() createUserDto: CreateUserDto) {
     const newUser = await this.authService.registerUser(createUserDto);
+    await this.authService.sendVerificationLink(createUserDto.email);
     return newUser;
   }
 
